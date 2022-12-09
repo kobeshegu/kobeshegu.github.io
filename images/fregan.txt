@@ -1,0 +1,6 @@
+@article{yang2022FreGAN,
+title   = {FreGAN: Exploiting Frequency Components for Training GANs under Limited Data},
+author  = {Yang, Mengping and Wang, Zhe and Chi, Ziqiu and Zhang, Yanbing},
+article = {arXiv preprint arXiv:2210.05461},
+year    = {2022} 
+}
