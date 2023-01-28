@@ -1,0 +1,9 @@
+@article{yang2023dfsgan,
+  title={DFSGAN: Introducing editable and representative attributes for few-shot image generation},
+  author={Yang, Mengping and Niu, Saisai and Wang, Zhe and Li, Dongdong and Du, Wenli},
+  journal={Engineering Applications of Artificial Intelligence},
+  volume={117},
+  pages={105519},
+  year={2023},
+  publisher={Elsevier}
+}
