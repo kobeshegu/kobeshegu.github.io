@@ -1,0 +1,8 @@
+@misc{yang2023revisiting,
+      title={Revisiting the Evaluation of Image Synthesis with GANs}, 
+      author={Mengping Yang and Ceyuan Yang and Yichi Zhang and Qingyan Bai and Yujun Shen and Bo Dai},
+      year={2023},
+      eprint={2304.01999},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}

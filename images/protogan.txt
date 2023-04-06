@@ -1,0 +1,9 @@
+@article{yang2023dfsgan,
+  title={ProtoGAN: Towards high diversity and fidelity image synthesis under limited data},
+  author={Yang, Mengping and Wang, Zhe and Chi, Ziqiu and Du, Wenli},
+  journal={Information Sciences},
+  volume={632},
+  pages={698-714},
+  year={2023},
+  publisher={Elsevier}
+}
