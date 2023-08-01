@@ -1,0 +1,6 @@
+@misc{yang2023revisiting,
+      title={Semantic-Aware Generator and Low-level Feature Augmentation for Few-shot Image Generation}, 
+      author={Zhe Wang and Jiaoyan Guan and Mengping Yang and Ting Xiao and Ziqiu Chi},
+      year={2023},
+      journal={The 31st ACM InternationalConference on Multimedia},
+}
