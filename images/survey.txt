@@ -1,0 +1,8 @@
+@misc{yang2023image,
+      title={Image Synthesis under Limited Data: A Survey and Taxonomy}, 
+      author={Mengping Yang and Zhe Wang},
+      year={2023},
+      eprint={2307.16879},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
