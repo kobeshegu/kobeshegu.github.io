@@ -1,0 +1,6 @@
+@inproceedings{Zhang2024diffusion,
+  title={Attention Calibration for Disentangled Text-to-Image Personalization},
+  author={Zhang Yanbing, Yang, Mengping and Zhou qin, and Wang, Zhe},
+  booktitle={Conference on Computer Vision and Pattern Recognition 2024},
+  year={2024},
+}
