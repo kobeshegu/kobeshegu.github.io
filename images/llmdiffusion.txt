@@ -1,0 +1,8 @@
+@misc{tan2024llmdiffusion,
+      title={An Empirical Study and Analysis of Text-to-Image Generation Using Large Language Model-Powered Textual Representation}, 
+      author={Zhiyu Tan and Mengping Yang and Luozheng Qin and Hao Yang and Ye Qian and Qiang Zhou and Cheng Zhang and Hao Li},
+      year={2024},
+      eprint={2405.12914},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
