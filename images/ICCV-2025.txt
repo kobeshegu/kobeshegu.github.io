@@ -1,0 +1,6 @@
+@inproceedings{Zhang2025FreeCus,
+  title={FreeCus: Free Lunch Subject-driven Customization in Diffusion Transformers},
+  author={Zhang Yanbing,  and Wang, Zhe and Zhou qin, and Yang, Mengping},
+  booktitle={ICCV},
+  year={2025},
+}

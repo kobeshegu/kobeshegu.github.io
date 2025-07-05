@@ -1,0 +1,9 @@
+@misc{qin2025cockatielensemblingsynthetichuman,
+      title={Cockatiel: Ensembling Synthetic and Human Preferenced Training for Detailed Video Caption}, 
+      author={Luozheng Qin and Zhiyu Tan and Mengping Yang and Xiaomeng Yang and Hao Li},
+      year={2025},
+      eprint={2503.09279},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2503.09279}, 
+}
