@@ -1,0 +1,5 @@
+@inproceedings{yangdual,
+  title={Dual-IPO: Dual-Iterative Preference Optimization for Text-to-Video Generation},
+  author={Yang, Xiaomeng and Yang, Mengping and JIA, GONG and Qin, Luozheng and Tan, Zhiyu and Li, Hao},
+  booktitle={The Fourteenth International Conference on Learning Representations}
+}

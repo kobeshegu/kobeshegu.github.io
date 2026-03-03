@@ -1,0 +1,6 @@
+@article{tan2025omni,
+  title={Omni-video: Democratizing unified video understanding and generation},
+  author={Tan, Zhiyu and Yang, Hao and Qin, Luozheng and Gong, Jia and Yang, Mengping and Li, Hao},
+  journal={arXiv preprint arXiv:2507.06119},
+  year={2025}
+}

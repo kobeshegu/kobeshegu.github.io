@@ -1,0 +1,6 @@
+@article{li2026diff,
+  title={Diff-Aid: Inference-time Adaptive Interaction Denoising for Rectified Text-to-Image Generation},
+  author={Li, Binglei and Yang, Mengping and Tan, Zhiyu and Zhang, Junping and Li, Hao},
+  journal={arXiv preprint arXiv:2602.13585},
+  year={2026}
+}

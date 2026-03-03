@@ -1,0 +1,6 @@
+@article{yang2026omni,
+  title={Omni-Video 2: Scaling MLLM-Conditioned Diffusion for Unified Video Generation and Editing},
+  author={Yang, Hao and Tan, Zhiyu and Gong, Jia and Qin, Luozheng and Chen, Hesen and Yang, Xiaomeng and Sun, Yuqing and Lin, Yuetan and Yang, Mengping and Li, Hao},
+  journal={arXiv preprint arXiv:2602.08820},
+  year={2026}
+}

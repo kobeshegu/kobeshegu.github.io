@@ -1,0 +1,6 @@
+@inproceedings{Zhang2025FreeCus,
+  title={DiverseDiT: Towards Diverse Representation Learning in Diffusion Transformers},
+  author={Yang, Mengping and Tan, Zhiyu and Li, Binglei and Yang, Xiaomeng, and Chen, Hesen and Li, Hao},
+  booktitle={CVPR},
+  year={2026},
+}

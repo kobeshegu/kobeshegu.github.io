@@ -1,0 +1,6 @@
+@article{li2026unraveling,
+  title={Unraveling MMDiT Blocks: Training-free Analysis and Enhancement of Text-conditioned Diffusion},
+  author={Li, Binglei and Yang, Mengping and Tan, Zhiyu and Zhang, Junping and Li, Hao},
+  journal={arXiv preprint arXiv:2601.02211},
+  year={2026}
+}

@@ -1,0 +1,6 @@
+@article{qin2025uni,
+  title={Uni-cot: Towards unified chain-of-thought reasoning across text and vision},
+  author={Qin, Luozheng and Gong, Jia and Sun, Yuqing and Li, Tianjiao and Yang, Mengping and Yang, Xiaomeng and Qu, Chao and Tan, Zhiyu and Li, Hao},
+  journal={ICLR},
+  year={2026}
+}
