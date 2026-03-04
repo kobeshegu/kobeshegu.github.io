@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiverseDiT: Towards Diverse Representation Learning in Diffusion Transformers</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=block" rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-stretch: 100%;
+            font-display: block;
+            font-weight: 300 700;
+            src: url(https://cdn.seaweed-apt.com/assets/fonts/roboto.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Outfit", sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        a {
+            color: #555;
+            text-decoration: underline;
+        }
+
+        a:visited {
+            color: #555;
+        }
+
+        a:hover {
+            color: #000;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #444;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-weight: 400;
+            line-height: 1.2;
+            color: #111;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin: 80px 0 30px;
+            font-weight: 400;
+            color: #111;
+        }
+
+        .subsection-title {
+            font-size: 22px;
+            margin: 40px 0 20px;
+            font-weight: 500;
+            color: #222;
+        }
+
+        .cite {
+            color: #444;
+            text-decoration: none;
+            font-size: 0.75em;
+            vertical-align: super;
+            line-height: 0;
+        }
+
+        .cite:hover {
+            text-decoration: underline;
+        }
+
+        /* Header styles */
+        header {
+            text-align: center;
+            padding: 80px 0 0;
+        }
+
+        .author, .author-a {
+            font-size: 18px;
+            color: #666;
+            padding: 20px 6px 0;
+            text-align: center;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .author:visited, .author-a:visited {
+            color: #666;
+        }
+
+        .author-a:hover {
+            color: #000;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0 40px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            background-color: transparent;
+            color: #555;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid #999;
+            font-size: 16px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .button:visited {
+            color: #555;
+        }
+
+        .button:hover {
+            color: #333;
+            background-color: #f5f5f5;
+            border-color: #666;
+        }
+
+        .button .icon {
+            margin-right: 8px;
+        }
+
+        /* Hero videos */
+        .hero-videos {
+            display: flex;
+            gap: 10px;
+            margin: 40px 0 15px;
+            justify-content: center;
+        }
+
+        .hero-video-container {
+            flex: 1 1 0;
+            min-width: 0;
+            text-align: center;
+        }
+
+        .hero-video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            aspect-ratio: 832 / 480;
+            object-fit: cover;
+        }
+
+        .hero-video-caption {
+            font-size: 15px;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hero-video-caption.expanded {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
+
+        .hero-main-caption {
+            font-size: 16px;
+            text-align: center;
+            color: #555;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        /* Media grid */
+        .media-grid {
+            display: flex;
+            gap: 20px;
+            margin: 40px 0;
+            align-items: stretch;
+            flex-wrap: nowrap;
+        }
+
+        .media-grid.wrap {
+            flex-wrap: wrap;
+        }
+
+        .media-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .media-grid .media-item {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        .media-grid > .media-item:only-child {
+            flex: 1 0 100%;
+            max-width: 100%;
+        }
+
+        .image-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .media-item img, 
+        .media-item video {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .media-caption {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Two column layout */
+        .two-column {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            align-items: flex-start;
+        }
+
+        .two-column .column-text {
+            min-width: 0;
+        }
+
+        .two-column .column-text p {
+            font-size: 18px;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .two-column .column-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .two-column .column-image {
+            flex-shrink: 0;
+        }
+
+        .two-column .column-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .two-column .column-image .media-caption {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Results grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .result-item {
+            text-align: center;
+        }
+
+        .result-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            aspect-ratio: 832 / 480;
+            object-fit: cover;
+        }
+
+        .result-caption {
+            font-size: 15px;
+            color: #666;
+            margin-top: 10px;
+            padding: 0 5px;
+            line-height: 1.4;
+            min-height: 2.8em;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-caption.expanded {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+            min-height: auto;
+        }
+
+        .result-caption:hover {
+            color: #333;
+        }
+
+        /* Comparison table */
+        .comparison-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 4px;
+            text-align: center;
+            vertical-align: top;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table th {
+            font-weight: 400;
+            font-size: 13px;
+            color: #555;
+            padding-bottom: 12px;
+            line-height: 1.4;
+            max-height: 4.2em;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .comparison-table th:first-child {
+            width: 90px;
+            font-style: normal;
+        }
+
+        .comparison-table th:not(:first-child) {
+            width: calc((100% - 90px) / 4);
+        }
+
+        .comparison-table th .prompt-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table th .prompt-text.expanded {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
+
+        .comparison-table th .prompt-text:hover {
+            color: #333;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 500;
+            font-size: 15px;
+            color: #333;
+            text-align: left;
+            vertical-align: middle;
+            width: 90px;
+        }
+
+        .comparison-table video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            aspect-ratio: 832 / 480;
+            object-fit: cover;
+        }
+
+        /* Flex column grid */
+        .flex-column-grid {
+            display: flex;
+            gap: 20px;
+            margin: 40px 0;
+            width: 100%;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .column .image-container {
+            width: 100%;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+
+        .column video, 
+        .column img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .column .media-caption {
+            margin-top: 10px;
+        }
+
+        /* Reference list */
+        .reference-list {
+            margin: 30px 0;
+        }
+
+        .reference-item {
+            margin-bottom: 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            color: #444;
+        }
+
+        .reference-number {
+            color: #333;
+            margin-right: 5px;
+        }
+
+        .reference-title {
+            font-style: italic;
+        }
+
+        /* BibTeX */
+        .bibtex-container {
+            margin: 80px 0 160px;
+        }
+
+        .bibtex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bibtex-label {
+            font-weight: 500;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .copy-button {
+            background: none;
+            border: 1px solid #ccc;
+            color: #555;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .copy-button:hover {
+            border-color: #999;
+            color: #333;
+        }
+
+        .copy-button.copied {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .bibtex-code {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #333;
+        }
+
+        /* Responsive - 900px */
+        @media (max-width: 900px) {
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 5px;
+            }
+
+            .comparison-table th {
+                font-size: 12px;
+            }
+
+            .comparison-table th .prompt-text {
+                font-size: 12px;
+            }
+
+            .comparison-table td:first-child {
+                font-size: 14px;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Responsive - 768px */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 24px;
+                margin: 60px 0 20px;
+            }
+
+            .subsection-title {
+                font-size: 20px;
+                margin: 30px 0 15px;
+            }
+            
+            .author, .author-a {
+                font-size: 16px;
+            }
+            
+            .button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .hero-videos {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-video-container {
+                flex: 1 1 45%;
+                min-width: 250px;
+            }
+
+            .hero-video-caption {
+                font-size: 14px;
+            }
+
+            .hero-main-caption {
+                font-size: 15px;
+            }
+            
+            .media-grid {
+                flex-direction: column;
+            }
+            
+            .media-grid .media-item {
+                flex: 1 0 100%;
+                max-width: 100%;
+            }
+
+            .media-caption {
+                font-size: 14px;
+            }
+
+            .two-column {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .two-column .column-text,
+            .two-column .column-image {
+                width: 100% !important;
+            }
+
+            .two-column .column-text p {
+                font-size: 16px;
+            }
+
+            .two-column .column-image .media-caption {
+                font-size: 14px;
+            }
+
+            .result-caption {
+                font-size: 14px;
+            }
+
+            .comparison-table th:first-child,
+            .comparison-table td:first-child {
+                width: 60px;
+            }
+
+            .comparison-table th .prompt-text {
+                font-size: 11px;
+            }
+
+            .comparison-table td:first-child {
+                font-size: 13px;
+            }
+            
+            .flex-column-grid {
+                flex-direction: column;
+            }
+            
+            .column {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .reference-item {
+                font-size: 14px;
+            }
+
+            .bibtex-label {
+                font-size: 16px;
+            }
+
+            .bibtex-code {
+                font-size: 12px;
+            }
+
+            .copy-button {
+                font-size: 12px;
+            }
+        }
+
+        /* Responsive - 480px */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 26px;
+                margin-top: 30px;
+            }
+            
+            .author, .author-a {
+                padding: 15px 2px 0;
+                font-size: 14px;
+            }
+            
+            .button {
+                font-size: 13px;
+            }
+
+            p {
+                font-size: 15px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+                margin: 40px 0 15px;
+            }
+
+            .subsection-title {
+                font-size: 18px;
+            }
+
+            .hero-video-container {
+                flex: 1 1 100%;
+            }
+
+            .hero-video-caption {
+                font-size: 13px;
+            }
+
+            .hero-main-caption {
+                font-size: 14px;
+            }
+            
+            .media-caption {
+                font-size: 13px;
+            }
+            
+            header {
+                padding: 60px 0 0;
+            }
+
+            .two-column .column-text p {
+                font-size: 15px;
+            }
+
+            .two-column .column-image .media-caption {
+                font-size: 13px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-caption {
+                font-size: 13px;
+            }
+
+            .comparison-table th .prompt-text {
+                font-size: 10px;
+            }
+
+            .comparison-table td:first-child {
+                font-size: 12px;
+            }
+
+            .reference-item {
+                font-size: 13px;
+            }
+
+            .bibtex-label {
+                font-size: 15px;
+            }
+
+            .bibtex-code {
+                font-size: 11px;
+                padding: 12px;
+            }
+
+            .copy-button {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+        }
+
+        /* Standalone equation blocks */
+        .equation-block {
+            margin: 20px 0;
+            padding: 16px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        /* Placeholder for tables/figures to be inserted */
+        .table-figure-placeholder {
+            margin: 20px 0 30px;
+            padding: 24px;
+            text-align: center;
+            background: #f0f0f0;
+            border: 1px dashed #999;
+            border-radius: 6px;
+            color: #666;
+            font-size: 15px;
+        }
+        .equation-block .MathJax {
+            font-size: 1.05em !important;
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DiverseDiT: Towards Diverse Representation Learning in Diffusion Transformers</h1>
+            <div style="margin-top: 20px;">
+                <div>
+                    <a class="author-a" href="https://kobeshegu.github.io/" target="_blank" rel="noopener noreferrer">Mengping Yang<sup>1,2</sup></a>
+                    <a class="author-a" rel="noopener noreferrer">Zhiyu Tan<sup>2,1,†</sup></a>
+                    <a class="author-a" rel="noopener noreferrer">Binglei Li<sup>1,2,3</sup></a>
+                    <a class="author-a" rel="noopener noreferrer">Xiaomeng Yang<sup>1</sup></a>
+                    <a class="author-a" rel="noopener noreferrer">Hesen Chen<sup>1,2</sup></a>
+                    <a class="author-a" href="https://scholar.google.com.hk/citations?user=pHN-QIwAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Hao Li<sup>2,1,3,∗</sup></a>
+                </div>
+                <div>
+                    <span class="author"><sup>1</sup>Shanghai Academy of AI for Science</span>
+                    <span class="author"><sup>2</sup>Fudan University</span>
+                    <span class="author"><sup>3</sup>Shanghai Innovation Institute</span>
+                </div>
+                <div class="author" style="padding-top: 5px;"><sup>†</sup>Project Lead, <sup>∗</sup>Corresponding Author</div>
+            </div>
+            <div class="button-group">
+                <a class="button" target="_blank" href="https://arxiv.org/pdf/xxxx.xxxxx">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    Research Paper
+                </a>
+                <a class="button" target="_blank" href="https://github.com/kobeshegu/DiverseDiT">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    GitHub
+                </a>
+            </div>
+        </header>
+
+        <div class="hero-videos">
+            <div class="hero-video-container" style="flex: 1 1 90%; max-width: 90%;">
+                <img src="assets/method-comparison.png" alt="Method comparison: REPA, DispLoss, and DiverseDiT" style="width: 90%; height: auto; display: block;">
+                <div class="hero-video-caption" style="margin-top: 12px;">Method concept comparison.</div>
+            </div>
+        </div>
+        <div class="hero-main-caption">
+            (a) REPA <a href="#ref75" class="cite">1</a> employs external encoders as guidance and different blocks' inputs are homogeneous. 
+            (b) DispLoss <a href="#ref67" class="cite">2</a> encourage internal representations to spread out but still with homogeneous input and without block-wise diversity. (c) We propose long residual connections to enhance input diversity and diversity loss to encourage diverse feature representations across blocks.
+        </div>
+
+        <div class="section-title">Abstract</div>
+        <p>
+            Recent breakthroughs in Diffusion Transformers (DiTs) have revolutionized the field of visual synthesis due to their superior scalability. To facilitate DiTs’ capability of capturing meaningful internal representations, recent works such as REPA incorporate external pretrained encoders for representation alignment. However, the underlying mechanisms governing representation learning within DiTs are not well understood. To this end, we first systematically investigate the representation dynamics of DiTs. Through analyzing the evolution and influence of internal representations under various settings, we reveal that representation diversity across blocks is a crucial factor for effective learning. Based on this key insight, we propose DiverseDiT, a novel framework that explicitly promotes representation diversity. DiverseDiT incorporates long residual connections to diversify input representations across blocks and a representation diversity loss to encourage blocks to learn distinct features. Extensive experiments on ImageNet 256 × 256 and 512 × 512 demonstrate that our DiverseDiT yields consistent performance gains and convergence acceleration when applied to different backbones with various sizes, even when tested on the challenging one-step generation setting. Furthermore, we show that DiverseDiT is complementary to existing representation learning techniques, leading to further performance gains. Our work provides valuable insights into the representation learning dynamics of DiTs and offers a practical approach for enhancing their performance.
+        </p>
+
+        <div class="section-title">Observations on Representation Learning in DiTs</div>
+        <p>
+            We systematically analyze representation dynamics in Diffusion Transformers. Below we summarize our main observations that motivate DiverseDiT.
+        </p>
+
+        <div class="media-grid" style="flex-wrap: nowrap;">
+            <div class="media-item" style="flex: 1; min-width: 0;">
+                <img src="assets/observations.png" alt="Observations: similarity heatmaps and representation diversity" style="width: 110%; height: auto;">
+                <div class="media-caption">Representation similarity heatmaps at different training steps and under different alignment settings.</div>
+            </div>
+            <div class="media-item" style="flex: 1; min-width: 0;">
+                <img src="assets/observations-metrics.png" alt="Metric results for observations" style="width: 100%; height: auto;">
+                <div class="media-caption">Metric results (e.g., FID) under different block alignment settings.</div>
+            </div>
+        </div>
+
+        <div class="subsection-title">(1). Representation diversity across different blocks increases during training</div>
+        <p>
+            The similarity heatmaps of SiT at different training steps (5K, 50K, 200K, 450K) show a clear trend of increasing representational diversity. Specifically, the heatmap becomes more diagonal as training progresses, and the representation between different layers becomes less similar. Intuitively, different blocks specialize and develop more distinct and complementary representations. Such observation aligns with the broader understanding that deep models learn hierarchical representations.
+        </p>
+
+        <div class="subsection-title">(2). External alignment enhances block differentiation</div>
+        <p>
+            The REPA heatmaps exhibit more distinct (less similar) patterns around the red mark compared to the corresponding regions in the SiT heatmaps, indicating that aligning specific blocks significantly increases the dissimilarity between the representations of the targeted block and other blocks. Additionally, consistent with REPA, aligning earlier blocks (<em>i.e.,</em> Block 5, Block 8) yields better performance than aligning later blocks (Block 10). This demonstrates that external alignment effectively promotes specialization by making the selected block's representation more different from other blocks.
+        </p>
+        <p>
+            In other words, REPA encourages each block to learn more distinct and complementary features, leading to a more diverse and more effective representation. More importantly, these observations provide insight into why REPA-like external alignment is effective: by enforcing specialization, it prevents representational collapse and encourages the network to explore a wider range of features. This specialization-driven perspective may also explain why aligning with larger models (DINOv2-L, -g) brings only marginal improvements compared to aligning with smaller models (DINOv2-B) in the original REPA.
+        </p>
+
+        <div class="subsection-title">(3). Aligning on more blocks with more external models does not necessarily improve performance</div>
+        <p>
+            While REPA with single blocks shows clear differentiation, using multiple blocks for guidance (e.g., Block:[2,5,8], [3,6,9]) does not bring similar improvements to the performance. In some cases, the FID score is even slightly worse (Block [2,5,8]), suggesting that applying guidance to more blocks might counterintuitively reduce the overall diversity between blocks. We hypothesize that this is due to the introduction of conflicting constraints, preventing individual blocks from effectively specializing.
+        </p>
+        <p>
+            Furthermore, aligning multiple blocks with different external encoders ([5/Dinov2+10/MAE], <em>i.e.</em>, aligning DinoV2 features on block 5 and MAE features on block 10) also provides limited benefit and shows limited representation diversity. Such observation further reflects that the representation diversity across blocks is a crucial factor for high-quality synthesis.
+        </p>
+
+        <p>
+            <b>Summary.</b> In general, our systematic analysis provides a comprehensive understanding of representation dynamics for DiTs and reveals that the key for representation learning is increasing the discrepancies of block representations. Our findings offer a novel perspective for explaining existing methods, showing how models learn representations during training and highlighting the critical role of block specialization. These observations motivate us to design more effective methods to enhance representation diversity for performance improvement and accelerated training.
+        </p>
+
+        <div class="section-title">Proposed Method</div>
+        <p>
+            Based on the above observations, we propose DiverseDiT to explicitly promote representation diversity. Our framework consists of two main components: <b>long residual connections</b> to diversify block inputs, and a <b>representation diversity loss</b> to encourage blocks to learn distinct features. The overall pipeline is illustrated below.
+        </p>
+        <div class="media-grid">
+            <div class="media-item" style="max-width: 95%; margin: 0 auto;">
+                <img src="assets/method-diagram.png" alt="DiverseDiT method overview" style="width: 40%; height: auto;">
+                <div class="media-caption">DiverseDiT incorporates long residual connections to diversify input representations across blocks and a representation diversity loss to encourage blocks to learn distinct features.</div>
+            </div>
+        </div>
+
+        <div class="subsection-title">Long Residual Connections</div>
+        <p>
+            Motivated by our findings on block-wise diversity, we argue that the diversity of <em>inputs</em> for each block also plays a crucial role in shaping the learned representations. However, conventional diffusion transformers often suffer from a lack of input diversity: each block's input is typically homogeneous and derived solely from the output of the preceding layer.
+        </p>
+        <p>
+            To address this, we employ <b>long residual connections</b> to inject diversity into the inputs of each block. This mechanism selectively injects the output of earlier layers into later layers, promoting feature reuse and preventing representational collapse. Formally, for a model with \(L\) DiT blocks, we connect the \(i\)-th block's output to the \((L-i)\)-th block via
+        </p>
+        <div class="equation-block">
+            \[
+            f_l = \mathcal{R}_{\text{res}}^i(f_i, f_{l-1}) = \text{Linear}(\text{Norm}(f_i \oplus f_{l-1})),
+            \]
+        </div>
+        <p>
+            where \(i \in \{0, \ldots, \lfloor L/2 \rfloor - 1\}\), and \(\mathcal{R}_{\text{res}}^i\) denotes the residual connection. Here \(f_i \in \mathbb{R}^{N \times T \times D}\) is the representation of the \(i\)-th block; \(\oplus\) denotes concatenation of \(f_i\) and \(f_{l-1}\), which is then processed by layer normalization and a linear layer. By injecting these skip connections, we break the chain of homogeneous inputs and encourage the network to learn more varied and informative representations from different sources.
+        </p>
+
+        <div class="subsection-title">Representation Diversity Loss</div>
+        <p>
+            To further encourage specialization and promote diversity in the learned representations, we introduce a <b>representation diversity loss</b> that explicitly promotes diverse feature representations within each block. It comprises three components: an <em>orthogonality loss</em>, a <em>proxy mutual-information minimization loss</em>, and a <em>feature dispersion loss</em>. To reduce computational cost, we only consider a subset of block pairs \(\mathcal{P} \subseteq \{(i, j) : i < j,\; i, j \in L\}\).
+        </p>
+        <p>
+            <b>Orthogonality loss.</b> For each block we define the token-wise mean feature along the \(N\) and \(T\) dimensions as
+        </p>
+        <div class="equation-block">
+            \[
+            \boldsymbol{\mu}_l = \frac{1}{NT} \sum_{n=1}^{N} \sum_{t=1}^{T} f_l[n, t, :] \in \mathbb{R}^{D}.
+            \]
+        </div>
+        <p>
+            We penalize high cosine similarity between block-wise mean representations to encourage cross-block orthogonality:
+        </p>
+        <div class="equation-block">
+            \[
+            \mathcal{L}_{\mathrm{orth}} = \frac{1}{|\mathcal{P}|} \sum_{(i, j) \in \mathcal{P}} \cos(\boldsymbol{\mu}_i, \boldsymbol{\mu}_j) = \frac{1}{|\mathcal{P}|} \sum_{(i, j) \in \mathcal{P}} \frac{\boldsymbol{\mu}_i^{\top} \boldsymbol{\mu}_j}{\|\boldsymbol{\mu}_i\|_2 \|\boldsymbol{\mu}_j\|_2}.
+            \]
+        </div>
+        <p>
+            <b>Proxy mutual-information loss.</b> We minimize correlation between block representations via a computationally efficient proxy. We define flattened, \(\ell_2\)-normalized token representations as
+        </p>
+        <div class="equation-block">
+            \[
+            \hat{\boldsymbol{f}}_{l, n, t} = \frac{f_l[n, t, :]}{\|f_l[n, t, :]\|_2} \in \mathbb{R}^{D}.
+            \]
+        </div>
+        <p>
+            The proxy mutual-information loss is
+        </p>
+        <div class="equation-block">
+            \[
+            \mathcal{L}_{\mathrm{MI}} = \frac{1}{|\mathcal{P}|} \sum_{(i, j) \in \mathcal{P}} \frac{1}{NT} \sum_{n=1}^{N} \sum_{t=1}^{T} \hat{\boldsymbol{f}}_{i, n, t}^{\top} \hat{\boldsymbol{f}}_{j, n, t}.
+            \]
+        </div>
+        <p>
+            <b>Feature dispersion loss.</b> We encourage diverse channel usage by maximizing the variance of feature activations. The representations of each block are flattened to \(\tilde{f}_l \in \mathbb{R}^{(NT) \times D}\) and normalized along the sample axis to obtain \(\widehat{\tilde{f}}_l\). We compute the averaged activation per dimension \(a = \frac{1}{|\mathcal{P}|} \sum_{p \in \mathcal{P}} \operatorname{mean}_{n,t}(\widehat{\tilde{f}}_l[n, t, :])\), normalize to \(a' = a / \max_k a_k\), and maximize its variance:
+        </p>
+        <div class="equation-block">
+            \[
+            \mathcal{L}_{\mathrm{disp}} = -\frac{1}{D} \sum_{k=1}^{D} (a'_k - \bar{a}')^2, \qquad \bar{a}' = \frac{1}{D} \sum_{k=1}^{D} a'_k.
+            \]
+        </div>
+        <p>
+            <b>Overall loss and adaptive weighting.</b> The overall representation diversity loss aggregates the above three components as
+        </p>
+        <div class="equation-block">
+            \[
+            \mathcal{L}_{\text{div}} = \lambda_{\text{orth}} \mathcal{L}_{\text{orth}} + \lambda_{\text{MI}} \mathcal{L}_{\text{MI}} + \lambda_{\text{disp}} \mathcal{L}_{\text{disp}},
+            \]
+        </div>
+        <p>
+            where \(\lambda_{\text{orth}}, \lambda_{\text{MI}}, \lambda_{\text{disp}}\) control the relative weight of each loss; we set them to \(0.33\) by default. In practice, when \(\mathcal{L}_{\text{div}}\) is optimized too small (<em>e.g.</em>, close to 0), the model can diverge. We therefore use an adaptive weight \(w\) for \(\mathcal{L}_{\text{div}}\):
+        </p>
+        <div class="equation-block">
+            \[
+            w = \begin{cases} 1, & \text{if } \mathcal{L}_{\text{div}} > 0.5, \\ \frac{\mathcal{L}_{\text{div}} - 0.1}{0.5}, & \text{if } 0.1 < \mathcal{L}_{\text{div}} \leq 0.5, \\ 0, & \text{otherwise}. \end{cases}
+            \]
+        </div>
+        <p>
+            This prevents over-separation of representations and helps the model retain meaningful, shared structure across the data.
+        </p>
+
+        <div class="section-title">Evaluation Results</div>
+
+        <div class="subsection-title">Improving representation learning across various model scales</div>
+        <p>
+            The table below presents the quantitative results of applying our proposed techniques to SiT and REPA across various model scales on ImageNet 256×256 without CFG. We observe that incorporating our method consistently yields substantial improvements on all evaluation metrics across all model scales, demonstrating its effectiveness and generalization regardless of the underlying training paradigm.
+        </p>
+        <p>
+            Notably, our method achieves an FID of 17.29 on the REPA-B setting with 400K iterations, which is better than that of SiT-L (<em>i.e.,</em> 18.77) with the same training iterations. Similarly, the performance of applying our method on the REPA-L outperforms that of the REPA-XL, <em>i.e.,</em> 8.47 vs 8.73 on FID and 123.03 vs 118.68 on IS.
+        </p>
+
+        <div class="media-grid" style="flex-wrap: nowrap;">
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/modelscale256.png" alt="Results across model scales on ImageNet 256×256 without CFG" style="width: 100%; height: auto;">
+                <div class="media-caption">Results across model scales on ImageNet 256×256 without CFG.</div>
+            </div>
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/training-iterations.png" alt="Generated images at different training iterations" style="width: 100%; height: auto;">
+                <div class="media-caption">Generated images by SiT-XL and our method at different training iterations.</div>
+            </div>
+        </div>
+
+        <!-- <div id="tab-different-size" class="media-grid">
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/modelscale256.png" alt="Results across model scales on ImageNet 256×256 without CFG" style="width: 50%; height: auto;">
+                <div class="media-caption">Results across model scales on ImageNet 256×256 without CFG.</div>
+            </div>
+        </div> -->
+        <p>
+            The figure on the right shows the images generated by SiT-XL and our proposed method at different training iterations. Our generated images exhibit more details, better structures, and fewer artifacts, demonstrating that our method leads to faster convergence and higher visual quality compared to the baseline models. That is, our design towards improving the diversity of representations across different blocks contributes to a scalable and efficient learning process.
+        </p>
+        <div class="subsection-title">Comparison with SoTA Models</div>
+        <p>
+            Table 2 presents the comparison results with recent state-of-the-art (SoTA) methods using CFG on ImageNet 256×256. As can be observed from the table, our method achieves competitive performance compared to SoTA models while requiring significantly fewer training epochs. At 80 epochs, our method attains an FID score of 1.89, outperforming REPA trained for 200 epochs (1.96) and surpassing the performance of several established methods trained for hundreds or even thousands of epochs.
+            For instance, the SiT-XL/2 model requires 1400 epochs to reach an FID of 2.06, while we achieve 1.52 with only 200 epochs. While REG achieves a slightly better FID of 1.36, it requires 800 epochs, four times the training cost of ours.
+        </p>
+        <p>
+            Table 3 shows the comparison results on ImageNet 512×512. Similarly, our DiverseDiT achieves a comparable FID of 2.21 with only 80 epochs and obtains the best FID score when trained for 200 epochs. The consistent strong performance across multiple metrics, coupled with the significantly reduced training time, shows the efficiency and effectiveness of our model in learning diverse and high-quality representations. Additionally, we provide selected samples generated by our method below (<a href="#fig-qualitative">qualitative results</a>); the generated images demonstrate that DiverseDiT produces images with excellent quality.
+        </p>
+        <div class="media-grid" style="flex-wrap: nowrap;">
+            <div class="media-item" style="max-width: 100%;">
+                <div class="media-item" style="max-width: 100%;">
+                    <img src="assets/imagenet256.png" alt="Comparison with SoTA on ImageNet 256×256 with CFG" style="width: 100%; height: auto;">
+                    <div class="media-caption">Comparison with SoTA on ImageNet 256×256 with CFG.</div>
+                </div>
+            </div>
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/imagenet512.png" alt="Comparison on ImageNet 512×512" style="width: 100%; height: auto;">
+                <div class="media-caption">Comparison on ImageNet 512×512.</div>
+            </div>
+        </div>
+
+        <div class="subsection-title">Improving representation learning for one-step generation</div>
+        <p>
+            Regarding one-step generation, we applied our proposed techniques to MeanFlow to assess the generalization ability. Table 4 presents the quantitative results across different model scales. Similar to our previous findings, incorporating our method consistently improves the performance with different model sizes, <em>e.g.,</em> our method improves the FID score of MF-B/2 from 9.44 to 8.51 and the IS from 152.55 to 158.84.
+        </p>
+        <div class="media-grid" style="flex-wrap: nowrap;">
+            <div class="media-item" style="max-width: 100%;">
+                <div class="media-item" style="max-width: 100%;">
+                    <img src="assets/onestep-modelscale.png" alt="One-step results across model scales" style="width: 100%; height: auto;">
+                    <div class="media-caption">One-step generation results across model scales.</div>
+                </div>
+            </div>
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/combined.png" alt="Compatibility with DispLoss and SRA" style="width: 100%; height: auto;">
+                <div class="media-caption">Compatibility with DispLoss and SRA.</div>
+            </div>
+        </div>
+
+        <div class="subsection-title">Combining with existing methods for further improvement</div>
+        <p>
+            Table 9 shows DiverseDiT's compatibility with DispLoss and SRA, yielding further performance gains. The results demonstrate that our method can be effectively combined with existing approaches for further performance improvements, reflecting the flexibility of our approach.
+            Noticeably, when combining our proposed method with both DispLoss and SRA, we achieve an FID of 21.95, which is better than that of REPA (22.99 in the table above) at the same iterations. Recall that REPA requires external models for representation alignment, while here we do not rely on any external guidance, demonstrating the potential for representation learning through internal mechanisms.
+        </p>
+
+        <div class="section-title" id="fig-qualitative">Qualitative Results</div>
+        <p>
+            We provide selected samples generated by our DiverseDiT below. The generated images demonstrate that our method produces images with excellent quality, rich details, and coherent structures.
+        </p>
+        <div class="media-grid">
+            <div class="media-item" style="max-width: 100%;">
+                <img src="assets/qualitative.png" alt="Qualitative generation results of DiverseDiT" style="width: 100%; height: auto;">
+                <div class="media-caption">Qualitative results: selected samples generated by DiverseDiT on ImageNet.</div>
+            </div>
+        </div>
+
+        <div class="section-title">Related Work</div>
+
+        <div class="reference-list">
+            <div class="reference-item" id="ref1">
+                <span class="reference-number">1. </span>
+                Yu Sihyun, et al. "Representation alignment for generation: Training diffusion transformers is easier than you think."
+            </div>
+            <div class="reference-item" id="ref2">
+                <span class="reference-number">2. </span>
+                Wang Runqian, et al. "Diffuse and disperse: Image generation with representation regularization."
+            </div>
+            <div class="reference-item" id="ref3">
+                <span class="reference-number">3. </span>
+                Jiang Dengyang, et al. "No other representation component is needed: Diffusion transformers can provide representation guidance by themselves"
+            </div>
+            <div class="reference-item" id="ref4">
+                <span class="reference-number">4. </span>
+                Wu Ge, et al. "Representation entanglement for generation: Training diffusion transformers is much easier than you think."
+            </div>
+            <div class="reference-item" id="ref5">
+                <span class="reference-number">5. </span>
+                Ma Nanye, et al. "SiT: Exploring flow and diffusion-based generative models with scalable interpolant transformers."
+            </div>
+        </div>
+
+        <div class="bibtex-container">
+            <div class="bibtex-header">
+                <span class="bibtex-label">Citation</span>
+                <button class="copy-button" onclick="copyBibtex()">
+                    <i class="fas fa-copy"></i>
+                    <span id="copy-text">Copy</span>
+                </button>
+            </div>
+            <div class="bibtex-code" id="bibtex-content">@misc{yang2026diversedit,
+    title={DiverseDiT: Towards Diverse Representation Learning in Diffusion Transformers}, 
+    author={Mengping Yang and Zhiyu Tan and Binglei Li and Xiaomeng Yang and Hesen Chen and Hao Li},
+    year={2026},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+}</div>
+        </div>
+    </div>
+
+    <script>
+        function copyBibtex() {
+            const bibtexContent = document.getElementById('bibtex-content').innerText;
+            navigator.clipboard.writeText(bibtexContent).then(function() {
+                const button = document.querySelector('.copy-button');
+                const copyText = document.getElementById('copy-text');
+                
+                button.classList.add('copied');
+                copyText.textContent = 'Copied!';
+                
+                setTimeout(function() {
+                    button.classList.remove('copied');
+                    copyText.textContent = 'Copy';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+                const textArea = document.createElement('textarea');
+                textArea.value = bibtexContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const button = document.querySelector('.copy-button');
+                const copyText = document.getElementById('copy-text');
+                button.classList.add('copied');
+                copyText.textContent = 'Copied!';
+                
+                setTimeout(function() {
+                    button.classList.remove('copied');
+                    copyText.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
